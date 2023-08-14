@@ -3,6 +3,7 @@ import asyncio
 import json
 import time
 from datetime import datetime
+import copy
 
 import requests
 
@@ -80,9 +81,9 @@ class Client:
             return
         if 200 <= code < 300 or code == 418:
             return data
-        headers = self.headers
-        headers['Authorization'] = 'Bearer [REDACTED]'
-        raise ValueError(f'Guilded API error: Request failed with status code {code} and message {data}\nMethod: {method}\nURL: {url}\nHeaders: {self.headers}\nData: {kwargs}')
+        response_headers = copy.deepcopy(self.headers)
+        response_headers['Authorization'] = 'Bearer [REDACTED]'
+        raise ValueError(f'Guilded API error: Request failed with status code {code} and message {data}\nMethod: {method}\nURL: {url}\nHeaders: {response_headers}\nData: {kwargs}')
 
     def send_message(
             self,
